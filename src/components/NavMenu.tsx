@@ -34,9 +34,6 @@ export default function NavMenu() {
           </Link>
         </li>
       ))}
-      <p>
-        <div></div>
-      </p>
     </nav>
   );
 }
