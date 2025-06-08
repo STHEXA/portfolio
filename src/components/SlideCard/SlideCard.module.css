@@ -1,0 +1,47 @@
+.carouselContainer {
+  transform-style: preserve-3d;
+  animation: rotate 20s infinite linear;
+}
+
+.carouselContainer.paused {
+  animation-play-state: paused;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(360deg);
+  }
+}
+
+.cardItem {
+  transform-style: preserve-3d;
+  backface-visibility: visible;
+}
+
+.cardFront,
+.cardBack {
+  backface-visibility: hidden;
+}
+
+.cardBack {
+  transform: rotateY(180deg);
+}
+
+.cardItem:nth-child(1) {
+  transform: rotateY(0deg) translateZ(280px);
+}
+
+.cardItem:nth-child(2) {
+  transform: rotateY(90deg) translateZ(280px);
+}
+
+.cardItem:nth-child(3) {
+  transform: rotateY(180deg) translateZ(280px);
+}
+
+.cardItem:nth-child(4) {
+  transform: rotateY(270deg) translateZ(280px);
+}
