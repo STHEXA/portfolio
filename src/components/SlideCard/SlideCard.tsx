@@ -1,7 +1,30 @@
-// import Image from "next/image";
-import React from "react";
+"use client";
+
+import { useState, useEffect } from "react";
 
 export default function SlideCard() {
+  const [rotationY, setRotationY] = useState(0);
+
+  useEffect(() => {
+    const handleScrollRotate = (e: CustomEvent) => {
+      const progress = e.detail.progress;
+      // スクロール進行度に応じて0-360度回転
+      setRotationY(progress * 360);
+    };
+
+    window.addEventListener(
+      "scrollRotate",
+      handleScrollRotate as EventListener
+    );
+
+    return () => {
+      window.removeEventListener(
+        "scrollRotate",
+        handleScrollRotate as EventListener
+      );
+    };
+  }, []);
+
   const cards = [
     {
       img: "/images/home.jpg",
@@ -9,9 +32,9 @@ export default function SlideCard() {
       description: "Welcome to my portfolio",
     },
     {
-      img: "/images/about.jpg",
-      title: "ABOUT",
-      description: "Learn more about me",
+      img: "/images/contact.jpg",
+      title: "CONTACT",
+      description: "Get in touch",
     },
     {
       img: "/images/works.jpg",
@@ -19,9 +42,14 @@ export default function SlideCard() {
       description: "View my projects",
     },
     {
-      img: "/images/contact.jpg",
-      title: "CONTACT",
-      description: "Get in touch",
+      img: "/images/skill.jpg",
+      title: "SKILL",
+      description: "スキル",
+    },
+    {
+      img: "/images/about.jpg",
+      title: "ABOUT",
+      description: "Learn more about me",
     },
   ];
 
@@ -41,42 +69,54 @@ export default function SlideCard() {
         }}
       >
         <div
-          className="relative w-full h-full animate-rotate3d"
+          className="relative w-full h-full transition-transform duration-500 ease-out"
           style={{
             transformStyle: "preserve-3d",
+            transform: `rotateY(${rotationY}deg)`,
           }}
         >
-          {cards.map((card, index) => (
-            <div
-              key={index}
-              className="absolute w-full h-full rounded-xl overflow-hidden shadow-2xl"
-              style={{
-                transform: `rotateY(${index * 90}deg) translateZ(150px)`,
-                transformStyle: "preserve-3d",
-              }}
-            >
-              {/* カード背景 */}
-              <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm border border-white/20"></div>
+          {cards.map((card, index) => {
+            // カード数に応じて角度と半径を計算
+            const angle = 360 / cards.length;
+            const theta = index * angle;
+            // カード幅を200pxと仮定
+            const cardWidth = 200;
+            // 間隔を広げるため倍率を1.3倍に
+            const radius =
+              (cardWidth / 2 / Math.tan(Math.PI / cards.length)) * 2;
+            return (
+              <div
+                key={index}
+                className="absolute w-full h-full rounded-xl overflow-hidden shadow-2xl"
+                style={{
+                  transform: `rotateY(${theta}deg) translateZ(${radius}px)`,
+                  transformStyle: "preserve-3d",
+                }}
+              >
+                {/* カード背景 */}
+                <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm border border-white/20"></div>
 
-              {/* 画像があれば表示 */}
-              <div className="relative w-full h-2/3 bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-                <div className="text-white text-6xl opacity-20">
-                  {card.title === "HOME" && "🏠"}
-                  {card.title === "ABOUT" && "👤"}
-                  {card.title === "WORKS" && "💼"}
-                  {card.title === "CONTACT" && "📧"}
+                {/* 画像があれば表示 */}
+                <div className="relative w-full h-2/3 bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                  <div className="text-white text-6xl opacity-20">
+                    {card.title === "HOME" && "🏠"}
+                    {card.title === "ABOUT" && "👤"}
+                    {card.title === "SKILL" && "💻"}
+                    {card.title === "WORKS" && "💼"}
+                    {card.title === "CONTACT" && "📧"}
+                  </div>
+                </div>
+
+                {/* カード情報 */}
+                <div className="absolute bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur-sm">
+                  <h3 className="text-lg font-bold text-gray-800 mb-1">
+                    {card.title}
+                  </h3>
+                  <p className="text-xs text-gray-600">{card.description}</p>
                 </div>
               </div>
-
-              {/* カード情報 */}
-              <div className="absolute bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur-sm">
-                <h3 className="text-lg font-bold text-gray-800 mb-1">
-                  {card.title}
-                </h3>
-                <p className="text-xs text-gray-600">{card.description}</p>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 

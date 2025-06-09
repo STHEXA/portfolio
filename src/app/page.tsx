@@ -1,7 +1,26 @@
+"use client";
+
+import { useRef } from "react";
 import NavMenu from "@/components/NavMenu";
 import SlideCard from "@/components/SlideCard/SlideCard";
 
 export default function Home() {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLDivElement;
+    const scrollTop = target.scrollTop;
+    const scrollHeight = target.scrollHeight - target.clientHeight;
+    const scrollProgress = scrollTop / scrollHeight;
+
+    // カスタムイベントを発火してSlideCardに回転情報を伝える
+    window.dispatchEvent(
+      new CustomEvent("scrollRotate", {
+        detail: { progress: scrollProgress },
+      })
+    );
+  };
+
   return (
     <div className="flex h-screen">
       {/* 左側 - 回転カードアニメーション */}
@@ -10,7 +29,11 @@ export default function Home() {
       </div>
 
       {/* 右側 - スクロール可能なコンテンツ */}
-      <div className="w-1/2 overflow-y-auto bg-white">
+      <div
+        ref={scrollRef}
+        className="w-1/2 overflow-y-auto bg-white"
+        onScroll={handleScroll}
+      >
         <div className="p-8 space-y-8">
           <header className="text-center py-8">
             <h1 className="text-4xl font-bold text-gray-800 mb-4">
